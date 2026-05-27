@@ -1,6 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd bestia && npm run build",
   "outputDirectory": "bestia/.next",
-  "installCommand": "npm install",
-  "root": "bestia"
+  "installCommand": "cd bestia && npm install"
 }
