@@ -79,8 +79,8 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Vote error:', errorMessage);
+    console.error('Vote error:', error);
+    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
     return NextResponse.json(
       { error: 'Server error', details: errorMessage },
       { status: 500 }
