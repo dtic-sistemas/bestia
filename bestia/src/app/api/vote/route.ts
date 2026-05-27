@@ -71,17 +71,7 @@ export async function POST(request: NextRequest) {
       throw voteError;
     }
 
-    // 8. Update pet vote count
-    const { error: updateError } = await supabase
-      .from('pets')
-      .update({ total_votes: (pet.total_votes || 0) + 1 })
-      .eq('id', petId);
-
-    if (updateError) {
-      console.error('Vote count update error:', updateError);
-    }
-
-    // 9. Return success
+    // 8. Return success
     return NextResponse.json({
       success: true,
       vote: vote,
