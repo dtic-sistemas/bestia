@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Duel, Pet, Vote } from '@/lib/types';
@@ -180,12 +179,11 @@ export default function DuelPage() {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Pet 1 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative w-full h-80">
-              <Image
+            <div className="w-full h-80 overflow-hidden">
+              <img
                 src={pet1.photo_url}
                 alt={pet1.name}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="p-6">
@@ -213,12 +211,11 @@ export default function DuelPage() {
 
           {/* Pet 2 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative w-full h-80">
-              <Image
+            <div className="w-full h-80 overflow-hidden">
+              <img
                 src={pet2.photo_url}
                 alt={pet2.name}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="p-6">
