@@ -18,6 +18,10 @@ export async function POST(request: NextRequest) {
     // 3. Get user IP (Vercel provides this in x-forwarded-for header)
     const userIp = request.headers.get('x-forwarded-for') || 'unknown';
 
+    // 3b. Generate device fingerprint if not provided
+    const finalDeviceFingerprint = deviceFingerprint ||
+      `${userIp}-${request.headers.get('user-agent') || 'unknown'}`;
+
     // 4. Check if duel exists
     const { data: duel, error: duelError } = await supabase
       .from('duels')
@@ -35,7 +39,7 @@ export async function POST(request: NextRequest) {
     // 5. Check if pet exists
     const { data: pet, error: petError } = await supabase
       .from('pets')
-      .select('id, total_votes')
+      .select('id')
       .eq('id', petId)
       .single();
 
@@ -53,7 +57,7 @@ export async function POST(request: NextRequest) {
         duel_id: duelId,
         pet_id: petId,
         user_ip: userIp,
-        device_fingerprint: deviceFingerprint || null,
+        device_fingerprint: finalDeviceFingerprint,
       })
       .select()
       .single();
