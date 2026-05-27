@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "bestia/.next",
+  "installCommand": "npm install",
+  "root": "bestia"
+}
