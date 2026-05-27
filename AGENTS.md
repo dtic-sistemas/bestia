@@ -46,10 +46,11 @@ Load only when needed:
 
 ## Current State
 
-**Last Updated:** 26 de mayo de 2026  
-**Working On:** Task 1.3 - Set up Vercel for auto-deployment  
-**Recently Completed:** Task 1.2 - Supabase connected (client, types, utils)  
+**Last Updated:** 27 de mayo de 2026 23:30 UTC  
+**Working On:** Task 2.7 - Create POST /api/vote endpoint  
+**Recently Completed:** Task 2.6 - Duel voting page created and tested (two-sided comparison with vote counts)  
 **Blocked By:** None  
+**Progress:** Phase 2 Feature 1 & 2 (Upload + Voting page) ~60% complete  
 
 ---
 
@@ -61,11 +62,11 @@ Setup everything needed to build features.
 
 - [x] **Task 1.1:** Initialize Next.js project locally ✅
 - [x] **Task 1.2:** Connect to Supabase (database + auth) ✅
-- [ ] **Task 1.3:** Set up Vercel for auto-deployment
-- [ ] **Task 1.4:** Create database schema (tables: users, pets, duels, votes)
-- [ ] **Task 1.5:** Test database connection works
+- [x] **Task 1.3:** Set up Vercel for auto-deployment ✅
+- [x] **Task 1.4:** Create database schema (tables: users, pets, duels, votes) ✅
+- [x] **Task 1.5:** Test database connection works ✅
 
-**Success criteria:** `npm run dev` starts server, Supabase connected, schema created
+**Success criteria:** ✅ COMPLETE - Server running, Supabase connected, schema created, health endpoint working
 
 ---
 
@@ -74,13 +75,13 @@ Setup everything needed to build features.
 Build the 5 MVP features from PRD.
 
 #### Feature 1: Upload Mascota (Week 3)
-- [ ] **Task 2.1:** Create `/upload` page (form: photo, name, species)
-- [ ] **Task 2.2:** Photo upload to Supabase Storage
-- [ ] **Task 2.3:** Save pet to database
-- [ ] **Task 2.4:** Photo preview before submit
-- [ ] **Task 2.5:** Test upload flow end-to-end
+- [x] **Task 2.1:** Create `/upload` page (form: photo, name, species) ✅
+- [x] **Task 2.2:** Photo upload to Supabase Storage ✅
+- [x] **Task 2.3:** Save pet to database ✅
+- [x] **Task 2.4:** Photo preview before submit ✅
+- [x] **Task 2.5:** Test upload flow end-to-end ✅
 
-**Success criteria:** Can upload photo, see it in database, no errors
+**Success criteria:** ✅ COMPLETE - Upload works, photo in Storage, pet in database
 
 #### Feature 2: Votación Sin Registro + Email Capture (Week 4)
 - [ ] **Task 2.6:** Create `/duel/[id]` page (two pets, vote buttons)
