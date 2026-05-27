@@ -91,16 +91,10 @@ export default function DuelPage() {
 
       setTimeRemaining(formatTimeRemaining(duelData.expires_at));
 
-      // Check if already voted
-      const deviceFingerprint = getDeviceFingerprint();
-      const { data: existingVote } = await supabase
-        .from('votes')
-        .select('*')
-        .eq('duel_id', duelId)
-        .eq('device_fingerprint', deviceFingerprint)
-        .maybeSingle();
-
-      if (existingVote) {
+      // Check if already voted (using localStorage)
+      const votedKey = `voted_${duelId}`;
+      const hasVotedLocally = localStorage.getItem(votedKey) === 'true';
+      if (hasVotedLocally) {
         setHasVoted(true);
       }
     } catch (err) {
@@ -124,11 +118,22 @@ export default function DuelPage() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Vote failed');
+        // Handle server errors
+        if (data.error === 'Ya votaste en este duelo') {
+          setHasVoted(true);
+          localStorage.setItem(`voted_${duelId}`, 'true');
+          setError('Ya votaste en este duelo');
+        } else {
+          setError(data.error || 'Error al votar');
+        }
+        return;
       }
 
       setHasVoted(true);
+      localStorage.setItem(`voted_${duelId}`, 'true');
 
       // Update vote counts
       if (petId === pet1?.id) {
@@ -137,7 +142,7 @@ export default function DuelPage() {
         setVotes2(votes2 + 1);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error voting');
+      setError(err instanceof Error ? err.message : 'Error al votar');
     } finally {
       setVotingFor(null);
     }
