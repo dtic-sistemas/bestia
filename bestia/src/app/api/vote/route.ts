@@ -79,9 +79,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Vote error:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Vote error:', errorMessage);
     return NextResponse.json(
-      { error: 'Server error' },
+      { error: 'Server error', details: errorMessage },
       { status: 500 }
     );
   }
