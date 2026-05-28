@@ -20,6 +20,7 @@ export default function DuelPage() {
   const [votingFor, setVotingFor] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [hasVoted, setHasVoted] = useState(false);
+  const [voteResultModal, setVoteResultModal] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
     loadDuel();
@@ -121,16 +122,25 @@ export default function DuelPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Handle server errors
+        // Show error modal
+        setVoteResultModal({
+          type: 'error',
+          message: data.error || 'Error al votar'
+        });
+
+        // If already voted, mark as voted
         if (data.error === 'Ya votaste en este duelo') {
           setHasVoted(true);
           localStorage.setItem(`voted_${duelId}`, 'true');
-          setError('Ya votaste en este duelo');
-        } else {
-          setError(data.error || 'Error al votar');
         }
         return;
       }
+
+      // Show success modal
+      setVoteResultModal({
+        type: 'success',
+        message: '¡Tu voto fue contado! 🎉'
+      });
 
       setHasVoted(true);
       localStorage.setItem(`voted_${duelId}`, 'true');
@@ -251,6 +261,33 @@ export default function DuelPage() {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Vote Result Modal */}
+        {voteResultModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center">
+              <div className="mb-4">
+                {voteResultModal.type === 'success' ? (
+                  <div className="text-5xl mb-4">🎉</div>
+                ) : (
+                  <div className="text-5xl mb-4">ℹ️</div>
+                )}
+              </div>
+              <h2 className={`text-2xl font-bold mb-2 ${
+                voteResultModal.type === 'success' ? 'text-green-600' : 'text-blue-600'
+              }`}>
+                {voteResultModal.type === 'success' ? '¡Voto contado!' : 'Información'}
+              </h2>
+              <p className="text-gray-600 mb-6">{voteResultModal.message}</p>
+              <button
+                onClick={() => setVoteResultModal(null)}
+                className="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Cerrar
+              </button>
+            </div>
           </div>
         )}
       </div>
