@@ -123,15 +123,19 @@ export default function DuelPage() {
       });
 
       const data = await response.json();
+      console.log('Capture email response:', { status: response.status, data });
 
       if (!response.ok) {
+        console.error('Email capture failed:', data);
         setError(data.error || 'Error al crear cuenta');
         return;
       }
 
       // Success - redirect to upload page
+      console.log('Email captured, redirecting to /upload');
       window.location.href = '/upload';
     } catch (err) {
+      console.error('Email capture error:', err);
       setError(err instanceof Error ? err.message : 'Error al crear cuenta');
     } finally {
       setCapturingEmail(false);

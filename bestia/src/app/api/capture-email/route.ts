@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Check if user already exists
-    const { data: existingUser } = await supabase.auth.admin.listUsers();
+    const { data: existingUser } = await supabaseAdmin.auth.admin.listUsers();
     const userExists = existingUser?.users?.some(
       (u) => u.email?.toLowerCase() === email.toLowerCase()
     );
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     const tempPassword = Math.random().toString(36).slice(-12);
 
     // 5. Create user in Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: email.toLowerCase(),
       password: tempPassword,
       email_confirm: true, // Auto-confirm email for MVP
