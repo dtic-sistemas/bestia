@@ -121,6 +121,18 @@ export default function DuelPage() {
     return `${baseUrl}/duel/${duelId}`;
   };
 
+  const trackShare = async (platform: string) => {
+    try {
+      await fetch('/api/track-share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ duelId, platform }),
+      });
+    } catch (err) {
+      console.error('Error tracking share:', err);
+    }
+  };
+
   const generateShortLink = async () => {
     if (shortLink) return shortLink;
 
@@ -139,6 +151,7 @@ export default function DuelPage() {
   const handleCopyLink = () => {
     const url = shortLink || getDuelUrl();
     navigator.clipboard.writeText(url);
+    trackShare('copy');
     alert('Link copiado al portapapeles');
   };
 
@@ -146,6 +159,7 @@ export default function DuelPage() {
     const url = shortLink || getDuelUrl();
     const text = `¡Vota por mi mascota en BESTIA! ${url}`;
     const encoded = encodeURIComponent(text);
+    trackShare('whatsapp');
     window.open(`https://wa.me/?text=${encoded}`, '_blank');
   };
 
@@ -153,12 +167,14 @@ export default function DuelPage() {
     const url = shortLink || getDuelUrl();
     const text = `¡Vota por mi mascota en BESTIA!`;
     const encoded = encodeURIComponent(text);
+    trackShare('telegram');
     window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encoded}`, '_blank');
   };
 
   const handleShareSMS = () => {
     const url = shortLink || getDuelUrl();
     const text = `Vota por mi mascota en BESTIA: ${url}`;
+    trackShare('sms');
     window.location.href = `sms:?body=${encodeURIComponent(text)}`;
   };
 
