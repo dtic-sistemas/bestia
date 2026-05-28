@@ -47,6 +47,34 @@ export default function DuelPage() {
     }
   }, [showShareModal]);
 
+  useEffect(() => {
+    if (!duelId || !pet1 || !pet2) return;
+
+    const channel = supabase
+      .channel(`votes:${duelId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'votes',
+          filter: `duel_id=eq.${duelId}`
+        },
+        (payload: any) => {
+          if (payload.new.pet_id === pet1.id) {
+            setVotes1(v => v + 1);
+          } else if (payload.new.pet_id === pet2.id) {
+            setVotes2(v => v + 1);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [duelId, pet1, pet2]);
+
   const loadDuel = async () => {
     try {
       setLoading(true);
