@@ -25,6 +25,7 @@ export default function DuelPage() {
   const [emailInput, setEmailInput] = useState('');
   const [capturingEmail, setCapturingEmail] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [shortLink, setShortLink] = useState<string | null>(null);
 
   useEffect(() => {
     loadDuel();
@@ -39,6 +40,12 @@ export default function DuelPage() {
 
     return () => clearInterval(timer);
   }, [duel]);
+
+  useEffect(() => {
+    if (showShareModal && !shortLink) {
+      generateShortLink();
+    }
+  }, [showShareModal]);
 
   const loadDuel = async () => {
     try {
@@ -114,27 +121,43 @@ export default function DuelPage() {
     return `${baseUrl}/duel/${duelId}`;
   };
 
+  const generateShortLink = async () => {
+    if (shortLink) return shortLink;
+
+    try {
+      const fullUrl = getDuelUrl();
+      const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(fullUrl)}`);
+      const short = await response.text();
+      setShortLink(short);
+      return short;
+    } catch (err) {
+      console.error('Error generating short link:', err);
+      return getDuelUrl();
+    }
+  };
+
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(getDuelUrl());
+    const url = shortLink || getDuelUrl();
+    navigator.clipboard.writeText(url);
     alert('Link copiado al portapapeles');
   };
 
   const handleShareWhatsApp = () => {
-    const url = getDuelUrl();
+    const url = shortLink || getDuelUrl();
     const text = `¡Vota por mi mascota en BESTIA! ${url}`;
     const encoded = encodeURIComponent(text);
     window.open(`https://wa.me/?text=${encoded}`, '_blank');
   };
 
   const handleShareTelegram = () => {
-    const url = getDuelUrl();
+    const url = shortLink || getDuelUrl();
     const text = `¡Vota por mi mascota en BESTIA!`;
     const encoded = encodeURIComponent(text);
     window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encoded}`, '_blank');
   };
 
   const handleShareSMS = () => {
-    const url = getDuelUrl();
+    const url = shortLink || getDuelUrl();
     const text = `Vota por mi mascota en BESTIA: ${url}`;
     window.location.href = `sms:?body=${encodeURIComponent(text)}`;
   };
