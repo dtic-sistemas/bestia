@@ -46,11 +46,11 @@ Load only when needed:
 
 ## Current State
 
-**Last Updated:** 28 de mayo de 2026 02:00 UTC  
-**Working On:** None (session paused - ready to continue Feature 5)  
-**Recently Completed:** Task 2.20 - Real-time scoreboard with Supabase Realtime (FULLY WORKING)  
+**Last Updated:** 28 de mayo de 2026 14:30 UTC  
+**Working On:** Feature 5 - Result page and bracket logic  
+**Recently Completed:** Task 2.21-2.22, 2.25 - Result page, winner determination API, trophy shareable  
 **Blocked By:** None  
-**Progress:** Phase 2 Features 1,2,3,4 ~80% complete. Ready for Feature 5 or Vercel deployment  
+**Progress:** Features 1-4 ✅ COMPLETE. Feature 5 ~60% complete (result page done, bracket logic pending)  
 
 ---
 
@@ -110,13 +110,13 @@ Build the 5 MVP features from PRD.
 **Success criteria:** ✅ COMPLETE - Real-time updates working across browsers with <1s latency
 
 #### Feature 5: Resultado & Bracket (Week 7-8)
-- [ ] **Task 2.21:** Create result page (winner, loser, next round)
-- [ ] **Task 2.22:** Implement winner determination (24h after start)
+- [x] **Task 2.21:** Create result page (winner, loser, next round) ✅
+- [x] **Task 2.22:** Implement winner determination (24h after start) ✅
 - [ ] **Task 2.23:** Consolation bracket logic (losers get another chance)
-- [ ] **Task 2.24:** Show champion name permanently
-- [ ] **Task 2.25:** Share trofeo digital
+- [x] **Task 2.24:** Show champion name permanently (in /trophy page) ✅
+- [x] **Task 2.25:** Share trofeo digital ✅
 
-**Success criteria:** Results show correctly, bracket advances, trofeo shareable
+**Success criteria:** ✅ Results show correctly, trofeo shareable. ⏳ Bracket auto-advancement pending
 
 ---
 

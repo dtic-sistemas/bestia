@@ -310,19 +310,86 @@ export default function DuelPage() {
   }
 
   const isClosed = new Date(duel.expires_at) < new Date();
+  const hasWinner = !!duel.winner_id;
+  const winner = hasWinner ? (duel.winner_id === pet1?.id ? pet1 : pet2) : null;
+  const loser = hasWinner ? (duel.winner_id === pet1?.id ? pet2 : pet1) : null;
+  const winnerVotes = hasWinner ? (duel.winner_id === pet1?.id ? votes1 : votes2) : 0;
+  const loserVotes = hasWinner ? (duel.winner_id === pet1?.id ? votes2 : votes1) : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        {/* Result Section */}
+        {hasWinner && winner && loser && (
+          <div className="mb-12">
+            <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg shadow-xl p-8 text-center">
+              <h1 className="text-4xl font-bold text-white mb-4">🏆 ¡Ganador!</h1>
+
+              {/* Trophy Card */}
+              <div className="bg-white rounded-lg shadow-lg p-8 mb-8 max-w-md mx-auto">
+                <div className="text-6xl mb-4">⭐</div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">{winner.name}</h2>
+                <p className="text-gray-600 mb-4 capitalize">
+                  {winner.species === 'gato' && '🐱 Gato'}
+                  {winner.species === 'perro' && '🐕 Perro'}
+                  {winner.species === 'otro' && '🦎 Otro'}
+                </p>
+                <div className="bg-yellow-50 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-gray-600 mb-1">Votos ganados</p>
+                  <p className="text-4xl font-bold text-yellow-600">{winnerVotes}</p>
+                </div>
+                <p className="text-gray-600 mb-6">
+                  ¡Felicidades a {winner.name}! Fue el ganador de esta semana
+                </p>
+
+                <div className="space-y-3">
+                  <a
+                    href={`/trophy/${duelId}`}
+                    className="block w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors text-center"
+                  >
+                    🏆 Ver Trofeo
+                  </a>
+                  <button
+                    onClick={() => setShowShareModal(true)}
+                    className="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    📤 Compartir en Redes
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-white text-sm">vs</p>
+
+              {/* Loser Card */}
+              <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{loser.name}</h3>
+                <p className="text-gray-600 mb-3 capitalize">
+                  {loser.species === 'gato' && '🐱 Gato'}
+                  {loser.species === 'perro' && '🐕 Perro'}
+                  {loser.species === 'otro' && '🦎 Otro'}
+                </p>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-sm text-gray-600">Votos</p>
+                  <p className="text-2xl font-bold text-gray-600">{loserVotes}</p>
+                </div>
+                <p className="text-gray-600 mt-4 text-sm">
+                  ¡Pero no te desanimes! {loser.name} puede competir en el bracket de consolación
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">¿Cuál es más linda?</h1>
           <p className="text-lg text-gray-600">
-            {isClosed ? '❌ Votación cerrada' : `⏱️ ${timeRemaining}`}
+            {hasWinner ? '✅ Votación completada' : isClosed ? '❌ Votación cerrada' : `⏱️ ${timeRemaining}`}
           </p>
         </div>
 
-        {/* Voting Grid */}
+        {/* Voting Grid - only show if no winner yet */}
+        {!hasWinner && (
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Pet 1 */}
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -388,6 +455,7 @@ export default function DuelPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Error Message */}
         {error && (
