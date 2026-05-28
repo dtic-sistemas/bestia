@@ -21,6 +21,9 @@ export default function DuelPage() {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [hasVoted, setHasVoted] = useState(false);
   const [voteResultModal, setVoteResultModal] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
+  const [capturingEmail, setCapturingEmail] = useState(false);
 
   useEffect(() => {
     loadDuel();
@@ -105,6 +108,36 @@ export default function DuelPage() {
     }
   };
 
+  const handleCaptureEmail = async () => {
+    if (!emailInput.trim()) {
+      setError('Por favor ingresa un email válido');
+      return;
+    }
+
+    setCapturingEmail(true);
+    try {
+      const response = await fetch('/api/capture-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailInput.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Error al crear cuenta');
+        return;
+      }
+
+      // Success - redirect to upload page
+      window.location.href = '/upload';
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al crear cuenta');
+    } finally {
+      setCapturingEmail(false);
+    }
+  };
+
   const handleVote = async (petId: string) => {
     if (hasVoted || !duel) return;
 
@@ -136,12 +169,8 @@ export default function DuelPage() {
         return;
       }
 
-      // Show success modal
-      setVoteResultModal({
-        type: 'success',
-        message: '¡Tu voto fue contado! 🎉'
-      });
-
+      // Show email capture modal instead of success modal
+      setShowEmailModal(true);
       setHasVoted(true);
       localStorage.setItem(`voted_${duelId}`, 'true');
 
@@ -287,6 +316,50 @@ export default function DuelPage() {
               >
                 Cerrar
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Email Capture Modal */}
+        {showEmailModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full">
+              <div className="text-center mb-6">
+                <div className="text-5xl mb-4">🎉</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Tu voto fue contado!</h2>
+                <p className="text-gray-600">¿Tienes mascota? Sube una foto y que compita</p>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tu email
+                </label>
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="ejemplo@mail.com"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  disabled={capturingEmail}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowEmailModal(false)}
+                  className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  disabled={capturingEmail}
+                >
+                  No, gracias
+                </button>
+                <button
+                  onClick={handleCaptureEmail}
+                  disabled={capturingEmail || !emailInput.trim()}
+                  className="flex-1 py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {capturingEmail ? 'Creando...' : 'Sí, quiero subir'}
+                </button>
+              </div>
             </div>
           </div>
         )}
