@@ -24,6 +24,7 @@ export default function DuelPage() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [capturingEmail, setCapturingEmail] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     loadDuel();
@@ -108,6 +109,36 @@ export default function DuelPage() {
     }
   };
 
+  const getDuelUrl = () => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${baseUrl}/duel/${duelId}`;
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(getDuelUrl());
+    alert('Link copiado al portapapeles');
+  };
+
+  const handleShareWhatsApp = () => {
+    const url = getDuelUrl();
+    const text = `¡Vota por mi mascota en BESTIA! ${url}`;
+    const encoded = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  };
+
+  const handleShareTelegram = () => {
+    const url = getDuelUrl();
+    const text = `¡Vota por mi mascota en BESTIA!`;
+    const encoded = encodeURIComponent(text);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encoded}`, '_blank');
+  };
+
+  const handleShareSMS = () => {
+    const url = getDuelUrl();
+    const text = `Vota por mi mascota en BESTIA: ${url}`;
+    window.location.href = `sms:?body=${encodeURIComponent(text)}`;
+  };
+
   const handleCaptureEmail = async () => {
     if (!emailInput.trim()) {
       setError('Por favor ingresa un email válido');
@@ -131,9 +162,10 @@ export default function DuelPage() {
         return;
       }
 
-      // Success - redirect to upload page
-      console.log('Email captured, redirecting to /upload');
-      window.location.href = '/upload';
+      // Success - show share modal
+      console.log('Email captured, showing share modal');
+      setShowEmailModal(false);
+      setShowShareModal(true);
     } catch (err) {
       console.error('Email capture error:', err);
       setError(err instanceof Error ? err.message : 'Error al crear cuenta');
@@ -364,6 +396,53 @@ export default function DuelPage() {
                   {capturingEmail ? 'Creando...' : 'Sí, quiero subir'}
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full">
+              <div className="text-center mb-6">
+                <div className="text-5xl mb-4">📤</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Comparte tu voto!</h2>
+                <p className="text-gray-600">Invita amigos a votar por tu mascota</p>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <button
+                  onClick={handleShareWhatsApp}
+                  className="w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  💬 WhatsApp
+                </button>
+                <button
+                  onClick={handleShareTelegram}
+                  className="w-full py-3 px-4 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-500 transition-colors flex items-center justify-center gap-2"
+                >
+                  ✈️ Telegram
+                </button>
+                <button
+                  onClick={handleShareSMS}
+                  className="w-full py-3 px-4 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  📱 SMS
+                </button>
+                <button
+                  onClick={handleCopyLink}
+                  className="w-full py-3 px-4 bg-gray-300 text-gray-900 font-semibold rounded-lg hover:bg-gray-400 transition-colors flex items-center justify-center gap-2"
+                >
+                  📋 Copiar link
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="w-full py-2 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Listo, continuar
+              </button>
             </div>
           </div>
         )}
