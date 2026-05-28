@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
     // 3. Get user IP (Vercel provides this in x-forwarded-for header)
     const userIp = request.headers.get('x-forwarded-for') || 'unknown';
 
-    // 3b. Generate device fingerprint if not provided
-    const finalDeviceFingerprint = deviceFingerprint ||
-      `${userIp}-${request.headers.get('user-agent') || 'unknown'}`;
+    // 3b. Use only IP for duplicate detection (persistent across refreshes)
+    // deviceFingerprint param is ignored - we use IP-based detection
+    const finalDeviceFingerprint = userIp;
 
     // 4. Check if duel exists
     const { data: duel, error: duelError } = await supabase
